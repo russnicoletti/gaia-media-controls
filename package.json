@@ -30,6 +30,7 @@
   },
   "browser": {
     "gaia-component": "./bower_components/gaia-component/gaia-component.js",
+    "gaia-slider": "./bower_components/gaia-slider/gaia-slider.js",
     "gaia-icons": "./bower_components/gaia-icons/gaia-icons.js"
   }
 }

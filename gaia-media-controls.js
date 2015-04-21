@@ -4,6 +4,7 @@
  * Dependencies
  */
 var Component = require('gaia-component');
+var slider = require('gaia-slider');
 var MediaControlsImpl = require('./lib/media-controls-impl');
 
 var MediaControls = Component.register('gaia-media-controls', {
@@ -23,6 +24,7 @@ var MediaControls = Component.register('gaia-media-controls', {
     if (!this.shadowRoot) {
       this.setupShadowRoot();
     }
+    this.slider = this.shadowRoot.querySelector('.slider-wrapper');
     this._impl = new MediaControlsImpl(this, this.shadowRoot, player);
   },
 
@@ -113,107 +115,6 @@ var MediaControls = Component.register('gaia-media-controls', {
     height: 4.2rem;
   }
 
-  .progress {
-    position: relative;
-    pointer-events: none;
-    width: 0;
-  }
-
-  /* 1. Center elements vertically within time-slider; 'top: 50%' centers the
-   *    top of the element vertically; 'elapsed-time' is the first element
-   *    to be layed out, it is 0.3rem in height, therefore 'top:50%' would
-   *    position the center of the element 0.1rem below the middle: move
-   *    it up 0.1rem to center the middle of the element vertically.
-   *    'time-background' is layed out after 'elapsed-time' and is 0.1rem in
-   *    height. With 'elapsed-time' being 0.3rem in height, 'top:50%' would
-   *    position 'time-background' 0.3rem below the center vertically: move it
-   *    up 0.3rem to center it vertically.
-   *
-   * 2. Ensure the layering order of time background,
-        elapsed time, and play head.
-   */
-
-  .elapsed-time {
-    height: 0.3rem;
-    background-color: #00caf2;
-    top: calc(50% - 0.1rem); /* 1 */
-    z-index: 20; /* 2 */
-  }
-
-  .time-background {
-    width: 100%;
-    height: 0.1rem;
-    top: calc(50% - 0.3rem); /* 1 */
-    background-color: #a6b4b6;
-    z-index: 10; /* 2 */
-  }
-  /*
-   * 1. Center 'play-head' vertically. 'top' is relative to the other
-   *    'slider-wrapper' elements which are 0.4rem in height; therefore,
-   *    'top:50%' would position the top of the element 0.4rem below the
-   *    the center of the 'sider-wrapper'. In order to position the center
-   *    of the element vertically, move it up by half its height plus
-   *    the height of the previously layed out elements.
-   *
-   * 2. Ensure the layering order of time background,
-   *    elapsed time, and play head.
-   */
-  .play-head {
-    top: calc(50% - (1.15rem + 0.4rem));
-    position: relative;
-    width: 2.3rem;
-    height: 2.3rem;
-
-    /* For LTR langauges, position the playhead 1.15 rems to the left
-     * so that the center of the playhead aligns with the beginning of
-     * the time slider.
-     */
-    margin-left: -1.15rem;
-
-    /* For RTL langauges, position the playhead 1.15 rems to the right
-     * so that the center of the playhead aligns with the end of
-     * the time slider.
-     */
-    margin-right: -1.15rem;
-
-    border: none;
-    background: none;
-    pointer-events: none;
-    z-index: 30; /* 2 */
-  }
-
-  /*
-   * Define the 'normal' play-head graphic. Using the 'after' pseudo-element
-   * here specifies that the 'normal' (smaller, white) play-head will
-   * appear on top of the larger, blue 'active' play-head (specified using
-   * the 'before' pseudo-element).
-   */
-  .play-head:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: calc(50% - 1.15rem);
-    width: 2.3rem;
-    height: 2.3rem;
-    border-radius: 50%;
-    background-color: #fff;
-  }
-
-  /* Define the 'active' play-head graphic (blue, larger than the 'normal'
-   * play-head). Using the 'before' pseudo-element specifies that the 'active'
-   * play-head will appear under the 'normal' play-head.
-   */
-  .play-head.active:before {
-    content: "";
-    position: absolute;
-    top: calc(50% - 3.05rem);
-    left: calc(50% - 3.05rem);
-    width: 6.1rem;
-    height: 6.1rem;
-    border-radius: 50%;
-    background-color: #00CAF2;
-  }
-
   /* video control bar -- rewind, pause/play, forward
    *
    * 1. The buttons should always display left-to-right.
@@ -270,11 +171,7 @@ var MediaControls = Component.register('gaia-media-controls', {
   <div class="media-controls-container">
     <div class="time-slider-bar">
       <span class="elapsed-text"></span>
-      <div class="slider-wrapper">
-        <div class="elapsed-time progress"></div>
-        <div class="time-background progress"></div>
-        <button class="play-head"></button>
-      </div>
+      <gaia-slider class="slider-wrapper" id="slider"></gaia-slider>
       <span class="duration-text"></span>
     </div>
     <div class="video-control-bar">
